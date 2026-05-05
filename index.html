@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Pedidos - Camisetas da Sala</title>
+    <style>
+        /* CSS - ESTILIZAÇÃO */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            min-height: 100vh;
+            padding: 15px;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        header { text-align: center; margin-bottom: 20px; }
+        h1 { font-size: 1.5rem; color: #1e3799; margin-bottom: 5px; }
+        header p { font-size: 0.9rem; color: #7f8c8d; }
+
+        .dashboard-resumo, .dashboard-detalhado {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .card-stats {
+            background: #f1f2f6;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            border-bottom: 3px solid #4a69bd;
+        }
+
+        .card-secondary {
+            background: #fff;
+            border: 1px solid #d1d8e0;
+            border-bottom: 3px solid #7f8c8d;
+        }
+
+        .card-stats span {
+            display: block;
+            font-size: 0.7rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .card-stats strong {
+            font-size: 1.2rem;
+            color: #1e3799;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #d1d8e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .table-wrapper {
+            border-radius: 12px;
+            overflow-x: auto;
+            border: 1px solid #d1d8e0;
+        }
+
+        table { width: 100%; border-collapse: collapse; background: #fff; min-width: 1100px; }
+        th { background: #4a69bd; color: white; padding: 12px; text-align: left; font-size: 0.65rem; text-transform: uppercase; }
+        td { padding: 10px 12px; border-bottom: 1px solid #f1f2f6; font-size: 0.8rem; }
+        
+        .badge-tipo {
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: bold;
+            background: #e2e8f0;
+        }
+
+        .status-badge {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.65rem;
+        }
+
+        .status-pendente { color: #d63031; }
+        .status-pago { color: #27ae60; }
+
+        @media screen and (max-width: 768px) {
+            thead { display: none; }
+            table { min-width: 100%; }
+            tr { display: block; border: 1px solid #e1e8f0; border-radius: 12px; margin-bottom: 10px; padding: 5px; }
+            td { display: flex; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid #f1f2f6; text-align: right; }
+            td:before { content: attr(data-label); font-weight: bold; color: #4a69bd; text-align: left; }
+        }
+    </style>
+</head>
+
+
+
+<body>
+
+<div class="container">
+    <header>
+        <h1>Pedidos de Camisas 👕</h1>
+        <p id="updateDate">Atualizado em: 03/05/2026  23:45</p>
+    </header>
+
+    <div class="dashboard-resumo">
+        <div class="card-stats">
+            <span>Alunos (Únicos)</span>
+            <strong id="totalAlunos">0</strong>
+        </div>
+        <div class="card-stats">
+            <span>Total de Peças</span>
+            <strong id="totalPecas">0</strong>
+        </div>
+        <div class="card-stats">
+            <span>Estimativa Total</span>
+            <strong id="financeiroTotal">R$ 0,00</strong>
+        </div>
+    </div>
+
+    <div class="dashboard-detalhado">
+        <div class="card-stats card-secondary">
+            <span>Total Polo</span>
+            <strong id="totalPolo">0</strong>
+        </div>
+        <div class="card-stats card-secondary">
+            <span>Total Malha</span>
+            <strong id="totalMalha">0</strong>
+        </div>
+    </div>
+    
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Buscar aluno...">
+    </div>
+
+    <div class="table-wrapper">
+        <table id="pedidoTable">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Modelo</th>
+                    <th>Tam.</th>
+                    <th>Qtd.</th>
+                    <th>Nome Camisa</th>
+                    <th>Vlr. Unit</th>
+                    <th>Vlr. Total</th>
+                    <th>Metade</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // LISTA COM CAMPOS PRÉ-PRONTOS (--- para textos e 0 para valores)
+    const alunos = [
+        { nome: "Alex", tipo: "Polo", tamanho: "M", qtd: 2, nomePersonalizado: "Alex", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Arthur Guilherme", tipo: "Malha", tamanho: "XXG", qtd: 1, nomePersonalizado: "@RTHUR", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Augusto Professor", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Bruno Lima", tipo: "Polo", tamanho: "GG", qtd: 2, nomePersonalizado: "LIMA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Bruno Reginato", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "Brunão", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Bruno Souza", tipo: "Polo", tamanho: "G", qtd: 2, nomePersonalizado: "SOUZA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Carlos Vieira", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "CARLOS V", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Cauã Sampaio", tipo: "Polo", tamanho: "P", qtd: 1, nomePersonalizado: "SAMPAIO", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Davi Comim", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "DAVI", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Diego Professor", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "PROFESSOR DIEGO", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Ecauender", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Estela Camila Cirino", tipo: "Polo", tamanho: "G (BL)", qtd: 1, nomePersonalizado: "ESTELA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Estela Camila Cirino", tipo: "Malha", tamanho: "M", qtd: 1, nomePersonalizado: "ESTELA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Evelyn", tipo: "Polo", tamanho: "M (BL)", qtd: 1, nomePersonalizado: "EVELYN", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Felipe Alves de Oliveira", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "FELLIPÃO", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Fábio Professor", tipo: "Polo", tamanho: "---", qtd: 1, nomePersonalizado: "FÁBIO", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Gabriel Fonseca", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "GABRIEL F", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Gabriel Henrique", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "GABRIEL H", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Isaac", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "ISAAC", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Isabelli Salandini", tipo: "Polo", tamanho: "G (BL)", qtd: 1, nomePersonalizado: "ISABELLI", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Isaque", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Jaque", tipo: "Polo", tamanho: "G (BL)", qtd: 1, nomePersonalizado: "JAQUE", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Joao Pedro Henrique Alves", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "ALVES", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "João Pedro Almeida Queiros", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "QUEIROS", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "João Vitor", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Kaique Gonçalves", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "Kaique A.", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Kauã Lima", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Kioshi", tipo: "Polo", tamanho: "GG", qtd: 2, nomePersonalizado: "IQUEGAMI", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Leo Muniz", tipo: "Polo", tamanho: "M", qtd: 2, nomePersonalizado: "MUNIZ", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Leonardo Fernandes Causin", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "CAUSIN", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Leonardo Fernandes Causin", tipo: "Malha", tamanho: "G", qtd: 1, nomePersonalizado: "CAUSIN", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Lucas", tipo: "Malha", tamanho: "XG", qtd: 1, nomePersonalizado: "MAGALHÃES", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Luiz Henrique Talarico", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "LUIZ", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Luiza Arantes", tipo: "Silk", tamanho: "P (BL)", qtd: 1, nomePersonalizado: "LULU", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Maikon Menossi", tipo: "Polo", tamanho: "XG", qtd: 1, nomePersonalizado: "MAIKÃO", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Maria Eduarda", tipo: "Polo", tamanho: "G (BL)", qtd: 1, nomePersonalizado: "MARIA ALMEIDA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Maria Eduarda", tipo: "Malha", tamanho: "M (BL)", qtd: 1, nomePersonalizado: "MARIA ALMEIDA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Matheus Vilela Garcia", tipo: "Malha", tamanho: "XG", qtd: 1, nomePersonalizado: "MATHEUS VILELA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Miguel Santana", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "SANTANA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Medrado", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "MEDRADO", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Pedro Henrique", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Rafael Contieri", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "Contieri", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Samuel", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "SAMUEL", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Tharso Pires", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "TH PIRES", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Trabaquim", tipo: "Malha", tamanho: "G", qtd: 1, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Victor Henrique S.", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "VICTOR", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Vinicius Braz", tipo: "Polo", tamanho: "GG", qtd: 2, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Wesley Eduardo", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "WESLEY", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" }
+    ];
+
+    function atualizarDashboard(listaFiltrada) {
+        const totalPecas = listaFiltrada.reduce((acc, a) => acc + a.qtd, 0);
+        const totalAlunos = new Set(listaFiltrada.map(a => a.nome)).size;
+        const totalPolo = listaFiltrada.filter(a => a.tipo === "Polo").reduce((acc, a) => acc + a.qtd, 0);
+        const totalMalha = listaFiltrada.filter(a => a.tipo === "Malha").reduce((acc, a) => acc + a.qtd, 0);
+        const financeiro = listaFiltrada.reduce((acc, a) => acc + a.vlrTotal, 0);
+
+        document.getElementById('totalPecas').innerText = totalPecas;
+        document.getElementById('totalAlunos').innerText = totalAlunos;
+        document.getElementById('totalPolo').innerText = totalPolo;
+        document.getElementById('totalMalha').innerText = totalMalha;
+        document.getElementById('financeiroTotal').innerText = financeiro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function renderTable(lista) {
+        const body = document.getElementById('tableBody');
+        body.innerHTML = '';
+        lista.forEach(aluno => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td data-label="Nome"><strong>${aluno.nome}</strong></td>
+                <td data-label="Modelo"><span class="badge-tipo">${aluno.tipo}</span></td>
+                <td data-label="Tam.">${aluno.tamanho}</td>
+                <td data-label="Qtd.">${aluno.qtd}</td>
+                <td data-label="Nome Camisa">${aluno.nomePersonalizado}</td>
+                <td data-label="Vlr. Unit">${aluno.vlrUnit.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                <td data-label="Vlr. Total">${aluno.vlrTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                <td data-label="Metade"><span class="status-badge ${aluno.pgMetade === 'Pago' ? 'status-pago' : 'status-pendente'}">${aluno.pgMetade}</span></td>
+                <td data-label="Total"><span class="status-badge ${aluno.pgTotal === 'Pago' ? 'status-pago' : 'status-pendente'}">${aluno.pgTotal}</span></td>
+            `;
+            body.appendChild(row);
+        });
+        atualizarDashboard(lista);
+    }
+
+    document.getElementById('searchInput').addEventListener('keyup', (e) => {
+        const busca = e.target.value.toLowerCase();
+        const filtrados = alunos.filter(a => a.nome.toLowerCase().includes(busca));
+        renderTable(filtrados);
+    });
+
+    renderTable(alunos);
+</script>
+</body>
+</html>
