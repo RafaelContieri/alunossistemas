@@ -118,7 +118,7 @@
 <div class="container">
     <header>
         <h1>Pedidos de Camisas 👕</h1>
-        <p id="updateDate">Atualizado em: 03/05/2026  23:45</p>
+        <p id="updateDate">Atualizado em: 05/05/2026  16:03</p>
     </header>
 
     <div class="dashboard-resumo">
@@ -161,6 +161,7 @@
                     <th>Qtd.</th>
                     <th>Nome Camisa</th>
                     <th>Vlr. Unit</th>
+                    <th>Vlr. Metade</th>
                     <th>Vlr. Total</th>
                     <th>Metade</th>
                     <th>Total</th>
@@ -175,7 +176,7 @@
     // LISTA COM CAMPOS PRÉ-PRONTOS (--- para textos e 0 para valores)
     const alunos = [
         { nome: "Alex", tipo: "Polo", tamanho: "M", qtd: 2, nomePersonalizado: "Alex", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
-        { nome: "Arthur Guilherme", tipo: "Malha", tamanho: "XXG", qtd: 1, nomePersonalizado: "@RTHUR", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Arthur Guilherme", tipo: "Malha", tamanho: "XGG", qtd: 1, nomePersonalizado: "@RTHUR", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Augusto Professor", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Bruno Lima", tipo: "Polo", tamanho: "GG", qtd: 2, nomePersonalizado: "LIMA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Bruno Reginato", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "Brunão", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
@@ -184,7 +185,7 @@
         { nome: "Cauã Sampaio", tipo: "Polo", tamanho: "P", qtd: 1, nomePersonalizado: "SAMPAIO", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Davi Comim", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "DAVI", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Diego Professor", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "PROFESSOR DIEGO", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
-        { nome: "Ecauender", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Ecauender", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "ECAUENDER", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Estela Camila Cirino", tipo: "Polo", tamanho: "G (BL)", qtd: 1, nomePersonalizado: "ESTELA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Estela Camila Cirino", tipo: "Malha", tamanho: "M", qtd: 1, nomePersonalizado: "ESTELA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Evelyn", tipo: "Polo", tamanho: "M (BL)", qtd: 1, nomePersonalizado: "EVELYN", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
@@ -194,7 +195,6 @@
         { nome: "Gabriel Henrique", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "GABRIEL H", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Isaac", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "ISAAC", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Isabelli Salandini", tipo: "Polo", tamanho: "G (BL)", qtd: 1, nomePersonalizado: "ISABELLI", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
-        { nome: "Isaque", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Jaque", tipo: "Polo", tamanho: "G (BL)", qtd: 1, nomePersonalizado: "JAQUE", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Joao Pedro Henrique Alves", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "ALVES", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "João Pedro Almeida Queiros", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "QUEIROS", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
@@ -205,24 +205,54 @@
         { nome: "Leo Muniz", tipo: "Polo", tamanho: "M", qtd: 2, nomePersonalizado: "MUNIZ", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Leonardo Fernandes Causin", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "CAUSIN", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Leonardo Fernandes Causin", tipo: "Malha", tamanho: "G", qtd: 1, nomePersonalizado: "CAUSIN", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
-        { nome: "Lucas", tipo: "Malha", tamanho: "XG", qtd: 1, nomePersonalizado: "MAGALHÃES", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Lucas Magalhães", tipo: "Malha", tamanho: "XGG", qtd: 1, nomePersonalizado: "MAGALHÃES", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Luiz Henrique Talarico", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "LUIZ", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
-        { nome: "Luiza Arantes", tipo: "Silk", tamanho: "P (BL)", qtd: 1, nomePersonalizado: "LULU", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Luiza Arantes", tipo: "Malha", tamanho: "P (BL)", qtd: 1, nomePersonalizado: "LULU", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Maikon Menossi", tipo: "Polo", tamanho: "XG", qtd: 1, nomePersonalizado: "MAIKÃO", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Maria Eduarda", tipo: "Polo", tamanho: "G (BL)", qtd: 1, nomePersonalizado: "MARIA ALMEIDA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Maria Eduarda", tipo: "Malha", tamanho: "M (BL)", qtd: 1, nomePersonalizado: "MARIA ALMEIDA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Matheus Vilela Garcia", tipo: "Malha", tamanho: "XG", qtd: 1, nomePersonalizado: "MATHEUS VILELA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Miguel Santana", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "SANTANA", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Medrado", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "MEDRADO", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
-        { nome: "Pedro Henrique", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Pedro Henrique Alves", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "ALVES", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Rafael Contieri", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "Contieri", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Samuel", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "SAMUEL", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Tharso Pires", tipo: "Polo", tamanho: "G", qtd: 1, nomePersonalizado: "TH PIRES", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
-        { nome: "Trabaquim", tipo: "Malha", tamanho: "G", qtd: 1, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Caio Trabaquim", tipo: "Malha", tamanho: "G", qtd: 1, nomePersonalizado: "TRABAQUIM", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Victor Henrique S.", tipo: "Polo", tamanho: "M", qtd: 1, nomePersonalizado: "VICTOR", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
-        { nome: "Vinicius Braz", tipo: "Polo", tamanho: "GG", qtd: 2, nomePersonalizado: "--", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
+        { nome: "Vinicius Braz", tipo: "Polo", tamanho: "GG", qtd: 2, nomePersonalizado: "BRAZ", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" },
         { nome: "Wesley Eduardo", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "WESLEY", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" }
     ];
+
+    const precos = {
+        Malha: { P: 69.90, M: 69.90, G: 69.90, GG: 72.90, XGG: 79.90 },
+        Polo: { P: 84.90, M: 84.90, G: 84.90, GG: 86.90, XGG: 89.90 }
+    };
+
+    function formatarTamanho(tamanho) {
+        const valor = String(tamanho).toUpperCase().trim();
+        if (valor === 'XGG') return 'XGG';
+        if (valor.startsWith('GG')) return 'GG';
+        if (valor.startsWith('G')) return 'G';
+        if (valor.startsWith('M')) return 'M';
+        if (valor.startsWith('P')) return 'P';
+        return valor;
+    }
+
+    function getPrecoUnitario(tipo, tamanho) {
+        const tamanhoFormatado = formatarTamanho(tamanho);
+        return precos[tipo]?.[tamanhoFormatado] ?? 0;
+    }
+
+    function calcularValores(lista) {
+        lista.forEach(aluno => {
+            aluno.vlrUnit = getPrecoUnitario(aluno.tipo, aluno.tamanho);
+            aluno.vlrTotal = aluno.vlrUnit * aluno.qtd;
+            aluno.vlrMetade = aluno.vlrTotal / 2;
+        });
+    }
+
+    calcularValores(alunos);
 
     function atualizarDashboard(listaFiltrada) {
         const totalPecas = listaFiltrada.reduce((acc, a) => acc + a.qtd, 0);
@@ -250,6 +280,7 @@
                 <td data-label="Qtd.">${aluno.qtd}</td>
                 <td data-label="Nome Camisa">${aluno.nomePersonalizado}</td>
                 <td data-label="Vlr. Unit">${aluno.vlrUnit.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                <td data-label="Vlr. Metade">${aluno.vlrMetade.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                 <td data-label="Vlr. Total">${aluno.vlrTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                 <td data-label="Metade"><span class="status-badge ${aluno.pgMetade === 'Pago' ? 'status-pago' : 'status-pendente'}">${aluno.pgMetade}</span></td>
                 <td data-label="Total"><span class="status-badge ${aluno.pgTotal === 'Pago' ? 'status-pago' : 'status-pendente'}">${aluno.pgTotal}</span></td>
