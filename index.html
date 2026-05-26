@@ -110,9 +110,6 @@
         }
     </style>
 </head>
-
-
-
 <body>
 
 <div class="container">
@@ -173,7 +170,7 @@
 </div>
 
 <script>
-    // LISTA COM CAMPOS PRÉ-PRONTOS (--- para textos e 0 para valores)
+    // LISTA COM CAMPOS PRÉ-PRONTOS
     const alunos = [
         { nome: "Alex", tipo: "Polo", tamanho: "P", qtd: 2, nomePersonalizado: "Alex", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pago", pgTotal: "Pendente" },
         { nome: "Arthur Guilherme", tipo: "Malha", tamanho: "XGG", qtd: 1, nomePersonalizado: "@RTHUR", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pago", pgTotal: "Pendente" },
@@ -229,7 +226,8 @@
         { nome: "Wesley Eduardo", tipo: "Polo", tamanho: "GG", qtd: 1, nomePersonalizado: "WESLEY", vlrUnit: 0, vlrTotal: 0, pgMetade: "Pendente", pgTotal: "Pendente" }
     ];
 
-    const precos = {
+    // TABELA DE PREÇOS ANTERIORES
+    const precosAntigos = {
         Malha: { P: 69.90, M: 69.90, G: 69.90, GG: 72.90, XGG: 79.90 },
         Polo: { P: 84.90, M: 84.90, G: 84.90, GG: 86.90, XGG: 89.90 }
     };
@@ -244,14 +242,32 @@
         return valor;
     }
 
-    function getPrecoUnitario(tipo, tamanho) {
+    function getPrecoUnitario(tipo, tamanho, nomePersonalizado) {
         const tamanhoFormatado = formatarTamanho(tamanho);
-        return precos[tipo]?.[tamanhoFormatado] ?? 0;
+        let precoBase = precosAntigos[tipo]?.[tamanhoFormatado] ?? 0;
+
+        // 1. Aplica o reajuste das camisas
+        if (tipo === "Polo") {
+            precoBase += 6.80;
+        } else if (tipo === "Malha") {
+            precoBase += 3.40;
+        }
+
+        // 2. Calcula a quantidade de nomes individuais e adiciona R$ 5,00 por cada
+        let totalNomes = 0;
+        if (nomePersonalizado && nomePersonalizado !== "--") {
+            // Conta as palavras separadas por espaços, ignorando múltiplos espaços seguidos
+            totalNomes = nomePersonalizado.trim().split(/\s+/).length;
+        }
+        
+        precoBase += totalNomes * 5.00;
+
+        return precoBase;
     }
 
     function calcularValores(lista) {
         lista.forEach(aluno => {
-            aluno.vlrUnit = getPrecoUnitario(aluno.tipo, aluno.tamanho);
+            aluno.vlrUnit = getPrecoUnitario(aluno.tipo, aluno.tamanho, aluno.nomePersonalizado);
             aluno.vlrTotal = aluno.vlrUnit * aluno.qtd;
             aluno.vlrMetade = aluno.vlrTotal / 2;
         });
